@@ -55,8 +55,8 @@ describe('Security', () => {
 
     it('does backslash and quote escaping', () => {
         expect( compileExpression(`"\\\\"`)({}) ).equals(`\\`);
-        expect( compileExpression(`"\\\\" + '\\\\'`)({'\\':'good'}) ).equals(`\\good`);
-        expect( compileExpression(`"\\"\\\\" + '\\'\\\\'`)({"'\\": 'good'}) ).equals(`"\\good`);
+        expect( compileExpression(`"\\\\" & '\\\\'`)({'\\':'good'}) ).equals(`\\good`);
+        expect( compileExpression(`"\\"\\\\" & '\\'\\\\'`)({"'\\": 'good'}) ).equals(`"\\good`);
 
         // Invalid escape sequences:
         expect( () => compileExpression(`'\\'`) ).throws();

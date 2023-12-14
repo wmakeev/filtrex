@@ -14,6 +14,7 @@ const grammar = {
             [_`\/`, `return "/" ;`],
             [_`-` , `return "-" ;`],
             [_`\+`, `return "+" ;`],
+            [_`&` , `return "&" ;`],
             [_`\^`, `return "^" ;`],
             [_`\(`, `return "(" ;`],
             [_`\)`, `return ")" ;`],
@@ -84,6 +85,7 @@ const grammar = {
         ['left', 'NONCHAINEDREL'],
         ['left', '==', '!=', '<', '<=', '>', '>=', '~='],
         ['left', 'CHAINEDREL'],
+        ['left', '&'],
         ['left', '+', '-'],
         ['left', '*', '/', 'mod', /* deprecated: */ '%'],
         ['left', 'not', 'UMINUS'],
@@ -98,6 +100,7 @@ const grammar = {
         e: [
             ['- e'    , code`ops['-'](${2})`, {prec: 'UMINUS'}],
             ['e + e'  , operatorCode],
+            ['e & e'  , operatorCode],
             ['e - e'  , operatorCode],
             ['e * e'  , operatorCode],
             ['e / e'  , operatorCode],

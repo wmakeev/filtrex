@@ -1,5 +1,5 @@
 {
-  "name": "filtrex",
+  "name": "@wmakeev/filtrex",
   "version": "3.0.0",
   "description": "A simple, safe, JavaScript Filter Expression compiler for end-users",
   "main": "dist/cjs/filtrex.js",
@@ -19,8 +19,10 @@
   "license": "MIT",
   "scripts": {
     "build": "gulp",
-    "test": "yarn build && mocha test",
-    "debug": "mocha test --inspect-brk"
+    "test": "npm run build && mocha test",
+    "debug": "mocha test --inspect-brk",
+    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "release": "np"
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",
@@ -42,6 +44,9 @@
     "vinyl": "^2.2.1"
   },
   "resolutions": {
+    "glob-parent": "^6.0.1"
+  },
+  "overrides": {
     "glob-parent": "^6.0.1"
   }
 }

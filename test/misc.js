@@ -192,7 +192,7 @@ describe('Various other things', () => {
 
         const options2 = { constants: { a: "a_const " } }
         const data = { a: "a_data ", b: "b_data " }
-        const expr = `'a' + a + 'b' + b`
+        const expr = `'a' & a & 'b' & b`
 
         expect( compileExpression(expr, options2)(data) ).equals("a_data a_const b_data b_data ")
     })

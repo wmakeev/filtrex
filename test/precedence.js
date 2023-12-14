@@ -131,4 +131,13 @@ describe('Operator precedence', () => {
             expect(eval(`-a / -b - -c ^ -d`, data)).eql( ((-a) / (-b)) - -((c) ** (-d)) );
         }
     })
+
+    it('String concat operator', () => {
+        for (const data of numbers) {
+            const { a, b, c, d } = data;
+
+            expect(eval(`a + b & c ^ d`, data)).eql( String(a + b) + String(c ** d) );
+            expect(eval(`a * b + c & c ^ d / c`, data)).eql( String(a * b + c) + String(c ** d / c) );
+        }
+    })
 });

@@ -20,6 +20,7 @@
  * `'foo-bar'`.
  * You can use the following operations:
  *  * `x + y` Add
+ *  * `x & y` String concat
  *  * `x - y` Subtract
  *  * `x * y` Multiply
  *  * `x / y` Divide
@@ -125,6 +126,7 @@ export interface Operators {
     '-'?: (a: any, b?: any) => any
     '*'?: (a: any, b: any) => any
     '/'?: (a: any, b: any) => any
+    '&'?: (a: any, b: any) => any
 
     '%'?: (a: any, b: any) => any
     '^'?: (a: any, b: any) => any

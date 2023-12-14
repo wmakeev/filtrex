@@ -1,6 +1,6 @@
 // the parser is dynamically generated from generateParser.js at compile time
 import { parser } from './parser.mjs'
-import { hasOwnProperty, bool, num, numstr, mod, arr, str, flatten, code } from './utils.mjs'
+import { hasOwnProperty, bool, num, simple, mod, arr, str, flatten, code } from './utils.mjs'
 import { UnknownFunctionError, UnknownPropertyError, UnknownOptionError, InternalError } from './errors.mjs'
 
 // Shared utility functions
@@ -17,7 +17,7 @@ const std =
 
     coerceArray: arr,
     coerceNumber: num,
-    coerceNumberOrString: numstr,
+    coerceNumberOrString: simple,
     coerceBoolean: bool,
 
     isSubset(a, b) {
@@ -249,6 +249,7 @@ export function useDotAccessOperator(name, get, obj, type) {
  * `'foo-bar'`.
  * You can use the following operations:
  *  * `x + y` Add
+ *  * `x & y` String concat
  *  * `x - y` Subtract
  *  * `x * y` Multiply
  *  * `x / y` Divide
@@ -323,7 +324,8 @@ export function compileExpression(expression, options) {
     }
 
     let defaultOperators = {
-        '+': (a, b) => numstr(a) + numstr(b),
+        '+': (a, b) => num(a) + num(b),
+        '&': (a, b) => str(a) + str(b),
         '-': (a, b) => b === undefined ? -num(a) : num(a) - num(b),
         '*': (a, b) => num(a) * num(b),
         '/': (a, b) => num(a) / num(b),
@@ -334,10 +336,10 @@ export function compileExpression(expression, options) {
         '==': (a, b) => a === b,
         '!=': (a, b) => a !== b,
 
-        '<': (a, b) => num(a) < num(b),
-        '<=': (a, b) => num(a) <= num(b),
-        '>=': (a, b) => num(a) >= num(b),
-        '>': (a, b) => num(a) > num(b),
+        '<': (a, b) => simple(a) < simple(b),
+        '<=': (a, b) => simple(a) <= simple(b),
+        '>=': (a, b) => simple(a) >= simple(b),
+        '>': (a, b) => simple(a) > simple(b),
 
         '~=': (a, b) => RegExp(str(b)).test(str(a))
     }

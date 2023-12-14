@@ -76,7 +76,19 @@ export function prettyType(value) {
 
 export function num(value) {
     value = unwrap(value)
+    
     if (typeof value === 'number') return value
+
+    if (typeof value === 'string') {
+        if (value === '') return 0
+        
+        const num = Number.parseFloat(value)
+        if (Number.isNaN(num) === false) return value
+    }
+
+    else if (typeof value === 'boolean') {
+        return value === true ? 1 : 0
+    }
 
     throw new UnexpectedTypeError('number', prettyType(value))
 }
@@ -84,20 +96,38 @@ export function num(value) {
 export function str(value) {
     value = unwrap(value)
     if (typeof value === 'string') return value
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value)
 
     throw new UnexpectedTypeError('text', prettyType(value))
 }
 
-export function numstr(value) {
+export function simple(value) {
     value = unwrap(value)
-    if (typeof value === 'string' || typeof value === 'number') return value
+    if (
+        typeof value === 'string' || 
+        typeof value === 'number' || 
+        typeof value === 'boolean'
+    ) {
+        return value
+    }
 
-    throw new UnexpectedTypeError('text or number', prettyType(value))
+    throw new UnexpectedTypeError('text, number or boolean', prettyType(value))
 }
 
 export function bool(value) {
     value = unwrap(value)
     if (typeof value === 'boolean') return value
+    if (typeof value === 'string') return value !== ''
+    if (typeof value === 'number') return value !== 0
+
+    // TODO fix error message
+    throw new UnexpectedTypeError('logical value (“true” or “false”)', prettyType(value))
+}
+
+export function simpleType(value) {
+    value = unwrap(value)
+    
+    if (typeof value === 'string' || typeof value === '') return value
 
     throw new UnexpectedTypeError('logical value (“true” or “false”)', prettyType(value))
 }

@@ -60,7 +60,7 @@ extends TypeError {
  *
  * The possible values of `expectedType` and `recievedType`
  * are: `"undefined"`, `"null"`, `"true"`, `"false"`, `"number"`,
- * `"text"`, `"unknown type"`, `"list"`, `"object"`, `"text or number"`
+ * `"text"`, `"unknown type"`, `"list"`, `"object"`, `"text, number or boolean"`
  * and `"logical value (“true” or “false”)"`
  *
  * @prop {string} expectedType
