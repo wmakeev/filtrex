@@ -1,6 +1,6 @@
 {
   "name": "@wmakeev/filtrex",
-  "version": "3.0.0",
+  "version": "4.0.0-0",
   "description": "A simple, safe, JavaScript Filter Expression compiler for end-users",
   "main": "dist/cjs/filtrex.js",
   "types": "dist/esm/filtrex.d.ts",
@@ -27,7 +27,6 @@
     "build": "gulp",
     "test": "npm run build && mocha test",
     "debug": "mocha test --inspect-brk",
-    "version": "auto-changelog -p && git add CHANGELOG.md",
     "release": "np"
   },
   "devDependencies": {
