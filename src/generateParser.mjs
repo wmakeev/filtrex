@@ -26,6 +26,7 @@ const grammar = {
             [_`<=`, `return "<=";`],
             [_`<` , `return "<" ;`],
             [_`>` , `return ">" ;`],
+            [_`\?\?` , `return "??" ;`],
             [_`not\s+in[^\w]`, `return "notIn";`],
             [_`and[^\w]` , `return "and" ;`],
             [_`or[^\w]`  , `return "or"  ;`],
@@ -79,6 +80,7 @@ const grammar = {
     // point: http://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
     operators: [
         ['right', 'if', 'then', 'else', /* deprecated: */ '?', ':'],
+        ['left', '??'],
         ['left', 'or'],
         ['left', 'and'],
         ['left', 'in', 'notIn'],
@@ -105,6 +107,7 @@ const grammar = {
             ['e * e'  , operatorCode],
             ['e / e'  , operatorCode],
             ['e ^ e'  , operatorCode],
+            ['e ?? e' , operatorCode],
             ['e mod e', code`ops.mod(${1}, ${3})`],
 
             ['e and e', code`${bool}(${1}) && ${bool}(${3})`],

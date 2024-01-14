@@ -70,6 +70,43 @@ describe('Various other things', () => {
         expect(arr).to.be.equalTo([42, "fifty", Math.PI]);
     });
 
+    it('nullish coalescing operator', () => {
+        const obj = {
+            TRUE: true,
+            FALSE: false,
+            NULL: null,
+            UNDEF: undefined,
+            ZERO: 0,
+            EMPTY_STR: '',
+            EMPTY_ARR: [],
+            NUM: 42,
+            STR: 'foo',
+            ARR: [1, 2 ,3]
+        }
+
+        expect( eval('42 ?? 43', obj) ).equals(42);
+        expect( eval('NUM ?? "ok"', obj) ).equals(obj.NUM);
+        expect( eval('"foo" ?? "bar"', obj) ).equals('foo');
+        expect( eval('STR ?? "bar"', obj) ).equals(obj.STR);
+        expect( eval('"" ?? "bar"', obj) ).equals('bar');
+        expect( eval('EMPTY_STR ?? "bar"', obj) ).equals('bar');
+        expect( eval('NULL ?? "ok"', obj) ).equals('ok');
+        expect( eval('UNDEF ?? "ok"', obj) ).equals('ok');
+        expect( eval('ZERO ?? "not"', obj) ).equals(obj.ZERO);
+        expect( eval('EMPTY_ARR ?? "ok"', obj) ).equals('ok');
+        expect( eval('ARR ?? "not"', obj) ).equals(obj.ARR);
+        expect( eval('TRUE ?? FALSE', obj) ).equals(true);
+        expect( eval('FALSE ?? TRUE', obj) ).equals(false);
+        expect( eval('FALSE ?? FALSE', obj) ).equals(false);
+
+        expect( eval('if "" ?? 1 then "ok" else "fail"') ).equals("ok");
+        expect( eval('NULL ?? UNDEF ?? EMPTY_STR ?? "ok"', obj) ).equals("ok");
+        
+        expect( eval('FALSE or ""', obj) ).equals(false);
+        expect( eval('FALSE or "" ?? TRUE', obj) ).equals(false);
+        expect( eval('("" or FALSE) ?? TRUE', obj) ).equals(false);
+    });
+
     it('ternary operator', () => {
         expect( eval('if 1 > 2 then 3 else 4') ).equals(4);
         expect( eval('if 1 < 2 then 3 else 4') ).equals(3);

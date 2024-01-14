@@ -342,7 +342,14 @@ export function compileExpression(expression, options) {
         '>=': (a, b) => simple(a) >= simple(b),
         '>': (a, b) => simple(a) > simple(b),
 
-        '~=': (a, b) => RegExp(str(b)).test(str(a))
+        '~=': (a, b) => RegExp(str(b)).test(str(a)),
+
+        '??': (a, b) => {
+            if (a == null) return b
+            if (typeof a === 'string') return a === '' ? b : a
+            if (Array.isArray(a)) return a.length === 0 ? b : a
+            return a
+        } 
     }
 
     if (operators) {
