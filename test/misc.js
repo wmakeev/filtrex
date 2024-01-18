@@ -118,15 +118,19 @@ describe('Various other things', () => {
     });
 
     it('kitchensink', () => {
-        var kitchenSink = compileExpression('if 4 > lowNumber * 2 and (max(a, b) < 20 or foo) then 1.1 else 9.4');
-        expect( kitchenSink({lowNumber: 1.5, a: 10, b: 12, foo: false}) ).equals(1.1);
-        expect( kitchenSink({lowNumber: 3.5, a: 10, b: 12, foo: false}) ).equals(9.4);
+        var kitchenSink = compileExpression('if 4 > lowNumber * 2 and (max(a, b) < 20 or foo:bar) then 1.1 else 9.4');
+        expect( kitchenSink({lowNumber: 1.5, a: 10, b: 12, 'foo:bar': false}) ).equals(1.1);
+        expect( kitchenSink({lowNumber: 3.5, a: 10, b: 12, 'foo:bar': false}) ).equals(9.4);
     });
 
     it('custom functions', () => {
         let triple = x => x * 3;
-        let options = { extraFunctions: {triple} };
+        let trim = str => str.trim();
+
+        let options = { extraFunctions: {triple, 'str:trim': trim} };
+        
         expect( compileExpression('triple(v)', options)({v:7}) ).equals(21);
+        expect( compileExpression('str:trim(gooStr)', options)({gooStr:"  goo "}) ).equals('goo');
     });
 
     it('custom property function basics', () => {
