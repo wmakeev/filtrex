@@ -144,6 +144,14 @@ export function arr(value) {
     }
 }
 
+export function ensureFunc(value) {
+    value = unwrap(value) // TODO Usefull?
+    
+    if (typeof value === 'function') return value
+
+    throw new UnexpectedTypeError('function', prettyType(value))
+}
+
 /**
  * Array.flat polyfill from MDN
  */

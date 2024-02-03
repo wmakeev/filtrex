@@ -1,6 +1,6 @@
 // the parser is dynamically generated from generateParser.js at compile time
 import { parser } from './parser.mjs'
-import { hasOwnProperty, bool, num, simple, mod, arr, str, flatten, code } from './utils.mjs'
+import { hasOwnProperty, bool, num, simple, mod, arr, str, flatten, code, ensureFunc } from './utils.mjs'
 import { UnknownFunctionError, UnknownPropertyError, UnknownOptionError, InternalError } from './errors.mjs'
 
 // Shared utility functions
@@ -324,6 +324,8 @@ export function compileExpression(expression, options) {
     }
 
     let defaultOperators = {
+        '|': (a, b) => ensureFunc(b)(a),
+
         '+': (a, b) => num(a) + num(b),
         '-': (a, b) => b === undefined ? -num(a) : num(a) - num(b),
         '*': (a, b) => num(a) * num(b),
@@ -403,8 +405,13 @@ export function compileExpression(expression, options) {
     }
 
     function prop({ name, type }, obj) {
-        if (type === 'unescaped' && hasOwnProperty(constants, name))
+        const isUnescaped = type === 'unescaped'
+
+        if (isUnescaped && hasOwnProperty(constants, name))
             return constants[name]
+
+        if (isUnescaped && hasOwnProperty(functions, name) && typeof functions[name] === "function")
+            return functions[name]
 
         return nakedProp(name, obj, type)
     }

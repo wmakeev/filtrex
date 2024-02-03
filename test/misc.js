@@ -21,6 +21,28 @@ const eval = (str, obj) => compileExpression(str)(obj);
 
 describe('Various other things', () => {
 
+    it('pipe operator', () => {
+        let add = x => y => x + y;
+        let mult = x => y => x * y;
+        let toFixed = n => x => x.toFixed(n)
+        let trim = s => s.trim()
+
+        let options = { extraFunctions: {add, mult, toFixed, trim} };
+        
+        expect( compileExpression('v | add(3)', options)({v:2}) ).equals(5);
+        expect( compileExpression('v | add(3) | add(5) | toFixed(2)', options)({v:2}) ).equals('10.00');
+        expect( compileExpression('s | trim', options)({s:' foo  '}) ).equals('foo');
+        expect( compileExpression('s | trim', options)({s:' foo  '}) ).equals('foo');
+
+        expect( compileExpression('if "" | empty then 3 | add(2) else "fail"', options)() ).equals(5);
+        expect( compileExpression('if (2 | mult(2)) == 4 then " ok " | trim else "fail"', options)() ).equals('ok');
+        expect( compileExpression('(2 | mult(2)) + 4 | add(1)', options)() ).equals(9);
+        
+        expect( compileExpression('1 | 2')({}) )
+            .instanceof(Error) // TODO UnexpectedTypeError
+            .and.have.property('message', 'Expected a function, but got a number instead.');
+    })
+
     it('in / not in', () => {
         // value in array
         expect( eval('5 in (1, 2, 3, 4)') ).equals(false);

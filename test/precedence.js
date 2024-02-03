@@ -55,7 +55,7 @@ const booleans = [
 
 describe('Operator precedence', () => {
 
-    it('Ternary has lowest precedence', () => {
+    it('Ternary precedence', () => {
         for (const data of numbers) {
             const { a, b, c, d } = data;
 

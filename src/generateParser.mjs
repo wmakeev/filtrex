@@ -26,6 +26,7 @@ const grammar = {
             [_`<=`, `return "<=";`],
             [_`<` , `return "<" ;`],
             [_`>` , `return ">" ;`],
+            [_`\|` , `return "|" ;`],
             [_`\?\?` , `return "??" ;`],
             [_`not\s+in[^\w]`, `return "notIn";`],
             [_`and[^\w]` , `return "and" ;`],
@@ -79,6 +80,7 @@ const grammar = {
     // Different languages have different rules, but this seems a good starting
     // point: http://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
     operators: [
+        ['left', '|'],
         ['right', 'if', 'then', 'else', /* deprecated: */ '?', ':'],
         ['left', '??'],
         ['left', 'or'],
@@ -108,6 +110,7 @@ const grammar = {
             ['e / e'  , operatorCode],
             ['e ^ e'  , operatorCode],
             ['e ?? e' , operatorCode],
+            ['e | e'  , operatorCode],
             ['e mod e', code`ops.mod(${1}, ${3})`],
 
             ['e and e', code`${bool}(${1}) && ${bool}(${3})`],
@@ -134,7 +137,6 @@ const grammar = {
             // Deprecated
             ['e % e' , parenless`std.warnDeprecated('modulo', ops['mod'](${1}, ${3}))`],
             ['e ? e : e', parenless`std.warnDeprecated('ternary', ${bool}(${1}) ? ${3} : ${5})`],
-
         ],
         RelationalOperator: [
             noop`==`, noop`!=`, noop`~=`, noop`<`,
