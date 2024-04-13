@@ -1,4 +1,5 @@
 __temp
+.vscode
 node_modules
 yarn_error.log
 yarn-error.log
