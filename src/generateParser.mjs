@@ -18,6 +18,8 @@ const grammar = {
             [_`\^`, `return "^" ;`],
             [_`\(`, `return "(" ;`],
             [_`\)`, `return ")" ;`],
+            [_`\[`, `return "[" ;`],
+            [_`\]`, `return "]" ;`],
             [_`\,`, `return "," ;`],
             [_`==`, `return "==";`],
             [_`\!=`,`return "!=";`],
@@ -122,7 +124,9 @@ const grammar = {
             ['e notIn e', code`!std.isSubset(${1}, ${3})`],
 
             ['( e )'  , code`${2}`],
+            ['[ e ]'  , code`[ ${2} ]`],
             ['( Arguments , e )', code`[ ${2}, ${4} ]`],
+            ['[ Arguments , e ]', code`[ ${2}, ${4} ]`],
 
             ['Number' , parenless`${1}`],
             ['Symbol' , parenless`prop(${1}, data)`],

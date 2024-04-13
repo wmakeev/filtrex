@@ -46,16 +46,22 @@ describe('Various other things', () => {
     it('in / not in', () => {
         // value in array
         expect( eval('5 in (1, 2, 3, 4)') ).equals(false);
+        expect( eval('5 in [1, 2, 3, 4]') ).equals(false);
         expect( eval('3 in (1, 2, 3, 4)') ).equals(true);
         expect( eval('5 not in (1, 2, 3, 4)') ).equals(true);
+        expect( eval('5 not in [1, 2, 3, 4]') ).equals(true);
         expect( eval('3 not in (1, 2, 3, 4)') ).equals(false);
 
         // array in array
         expect( eval('(1, 2) in (1, 2, 3)') ).equals(true);
         expect( eval('(1, 2) in (2, 3, 1)') ).equals(true);
+        expect( eval('(1, 2) in [2, 3, 1]') ).equals(true);
+        expect( eval('[2] in [2, 3, 1]') ).equals(true);
+        expect( eval('[1, 2] in [2, 3, 1]') ).equals(true);
         expect( eval('(3, 4) in (1, 2, 3)') ).equals(false);
         expect( eval('(1, 2) not in (1, 2, 3)') ).equals(false);
         expect( eval('(1, 2) not in (2, 3, 1)') ).equals(false);
+        expect( eval('[1, 2] not in (2, 3, 1)') ).equals(false);
         expect( eval('(3, 4) not in (1, 2, 3)') ).equals(true);
 
         // other edge cases
@@ -76,6 +82,8 @@ describe('Various other things', () => {
         expect( eval('foo not in ("aa", "bb")', {foo:'cc'}) ).equals(true);
 
         expect( eval(`"\n"`) ).equals("\n");
+        // expect( eval(`"\\n"`) ).equals('\\n'); // FIXME Fails
+        expect( eval(`"\\"foo\\""`) ).equals('"foo"');
         expect( eval(`"\u0000"`) ).equals("\u0000");
         expect( eval(`"\uD800"`) ).equals("\uD800");
     });
@@ -86,10 +94,15 @@ describe('Various other things', () => {
     });
 
     it('array support', () => {
-        const arr = eval('(42, "fifty", pi)', {pi: Math.PI});
+        const arr1 = eval('(42, "fifty", pi)', {pi: Math.PI});
 
-        expect(arr).is.array();
-        expect(arr).to.be.equalTo([42, "fifty", Math.PI]);
+        expect(arr1).is.array();
+        expect(arr1).to.be.equalTo([42, "fifty", Math.PI]);
+
+        const arr2 = eval('[42, "fifty", pi]', {pi: Math.PI});
+
+        expect(arr2).is.array();
+        expect(arr2).to.be.equalTo([42, "fifty", Math.PI]);
     });
 
     it('nullish coalescing operator', () => {
@@ -228,8 +241,10 @@ describe('Various other things', () => {
 
     it('gives the correct precedence to "in" and "not in"', () => {
         expect( eval('4 + 3 in (7, 8)') ).equals(true);
+        expect( eval('4 + 3 in [7, 8]') ).equals(true);
         expect( eval('4 + 3 in (6, 8)') ).equals(false);
         expect( eval('4 + 3 not in (7, 8)') ).equals(false);
+        expect( eval('4 + 3 not in [7, 8]') ).equals(false);
         expect( eval('4 + 3 not in (6, 8)') ).equals(true);
     })
 
