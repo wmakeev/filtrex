@@ -153,7 +153,14 @@ describe('Various other things', () => {
     });
 
     it('kitchensink', () => {
-        var kitchenSink = compileExpression('if 4 > lowNumber * 2 and (max(a, b) < 20 or foo:bar) then 1.1 else 9.4');
+        var kitchenSink = compileExpression(
+            'if 4 > lowNumber * 2 and (max(a, b) < 20 or foo:bar) then 1.1 else 9.4',
+            {
+                extraFunctions: {
+                    max: Math.max
+                }
+            }
+        );
         expect( kitchenSink({lowNumber: 1.5, a: 10, b: 12, 'foo:bar': false}) ).equals(1.1);
         expect( kitchenSink({lowNumber: 3.5, a: 10, b: 12, 'foo:bar': false}) ).equals(9.4);
     });

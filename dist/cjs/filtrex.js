@@ -3041,16 +3041,6 @@ function useDotAccessOperatorAndOptionalChaining(name, get, obj, type) {
  *  * `if x then y else z` If boolean x, value y, else z
  *  * `( x )` Explicity operator precedence
  *  * `( x, y, z )` Array of elements x, y and z
- *  * `abs(x)` Absolute value
- *  * `ceil(x)` Round floating point up
- *  * `floor(x)` Round floating point down
- *  * `log(x)` Natural logarithm
- *  * `log2(x)` Binary logarithm
- *  * `log10(x)` Decadic logarithm
- *  * `max(a, b, c...)` Max value (variable length of args)
- *  * `min(a, b, c...)` Min value (variable length of args)
- *  * `round(x)` Round floating point
- *  * `sqrt(x)` Square root
  *  * `exists(x)` True if `x` is neither `undefined` nor `null`
  *  * `empty(x)` True if `x` doesn't exist, it is an empty string or empty array
  *  * `myFooBarFunction(x)` Custom function defined in `options.extraFunctions`
@@ -3077,16 +3067,6 @@ function compileExpression(expression, options) {
 
 
   var functions = {
-    abs: Math.abs,
-    ceil: Math.ceil,
-    floor: Math.floor,
-    log: Math.log,
-    log2: Math.log2,
-    log10: Math.log10,
-    max: Math.max,
-    min: Math.min,
-    round: Math.round,
-    sqrt: Math.sqrt,
     exists: function exists(v) {
       return v !== undefined && v !== null;
     },

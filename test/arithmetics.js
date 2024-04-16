@@ -3,9 +3,12 @@ const { compileExpression } = require("../dist/cjs/filtrex");
 const { describe, it } = require("mocha");
 const { expect } = require("chai");
 
-const eval = (str, obj) => compileExpression(str)(obj);
-
-
+const eval = (str, obj) => compileExpression(str, {
+    extraFunctions: {
+        'min': Math.min,
+        'max': Math.max
+    }
+})(obj);
 
 
 describe('Arithmetics', () => {
@@ -20,20 +23,6 @@ describe('Arithmetics', () => {
         expect( eval('97 mod 10') ).equals(7);
         expect( eval('2 * 3 ^ 2') ).equals(18)
     });
-
-
-    it('does math functions', () => {
-        expect( eval('abs(-5)') ).equals(5);
-        expect( eval('abs(5)') ).equals(5);
-        expect( eval('ceil(4.1)') ).equals(5);
-        expect( eval('ceil(4.6)') ).equals(5);
-        expect( eval('floor(4.1)') ).equals(4);
-        expect( eval('floor(4.6)') ).equals(4);
-        expect( eval('round(4.1)') ).equals(4);
-        expect( eval('round(4.6)') ).equals(5);
-        expect( eval('sqrt(9)') ).equals(3);
-    });
-
 
     it('supports functions with multiple args', () => {
         expect( eval('min()') ).equals(Infinity);
