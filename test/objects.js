@@ -4,8 +4,6 @@ const { describe, it } = require("mocha");
 const { expect } = require("chai");
 
 
-
-
 describe('Object support', () => {
 
     it('can bind to data', () => {

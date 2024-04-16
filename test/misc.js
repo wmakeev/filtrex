@@ -13,10 +13,7 @@ const assertArrays = require('chai-arrays');
 chai.use(assertArrays);
 const { expect } = chai;
 
-
 const eval = (str, obj) => compileExpression(str)(obj);
-
-
 
 
 describe('Various other things', () => {
