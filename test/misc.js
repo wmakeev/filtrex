@@ -282,18 +282,6 @@ describe('Various other things', () => {
         expect( compileExpression(expr, options2)(data) ).equals("a_data a_const b_data b_data ")
     })
 
-    it('deprecated syntax still works', () => {
-        expect( eval('10 % 2') ).equals(0)
-        expect( eval('11 % 2') ).equals(1)
-        expect( eval('-1 % 2') ).equals(1)
-        expect( eval('-0.1 % 5') ).equals(4.9)
-
-        expect( eval('1 < 2 ? 3 < 4 ? 42 : 420 : 5 < 6 ? 69 : -1/12') ).equals(42);
-        expect( eval('1 < 2 ? 3 > 4 ? 42 : 420 : 5 < 6 ? 69 : -1/12') ).equals(420);
-        expect( eval('1 > 2 ? 3 < 4 ? 42 : 420 : 5 < 6 ? 69 : -1/12') ).equals(69);
-        expect( eval('1 > 2 ? 3 < 4 ? 42 : 420 : 5 > 6 ? 69 : -1/12') ).equals(-1/12);
-    })
-
     it('useDotAccessOperator works', () => {
         const expr = "foo.bar"
 

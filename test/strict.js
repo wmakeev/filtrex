@@ -64,7 +64,48 @@ describe('Strict', () => {
     })
 
     it('does typechecking on arithmetic operators', () => {
+        const data = {
+            TRUE: true,
+            date: new Date(Date.UTC(1997, 6, 18)),
+            boxedNum: new Number(2),
+            boxedStr: new String('hello')
+        }
+        
+        expect( eval('42 * 42', data) ).equals(42 * 42)
+        expect( eval('42 * "42"', data) ).equals(42 * 42)
+        expect( eval('"42" * 42', data) ).equals(42 * 42)
+        expect( eval('42 * "hello"', data) ).is.instanceOf(TypeError)
+        expect( eval('42 * date', data) ).is.instanceOf(TypeError)
+        expect( eval('42 * boxedNum', data) ).equals(42 * 2)
+        expect( eval('42 * boxedStr', data) ).is.instanceOf(TypeError)
+        expect( eval('42 * TRUE', data) ).equals(42 * 1)
 
+        expect( eval('42 - 42', data) ).equals(42 - 42)
+        expect( eval('42 - "42"', data) ).equals(42 - 42)
+        expect( eval('"42" - 42', data) ).equals(42 - 42)
+        expect( eval('42 - "hello"', data) ).is.instanceOf(TypeError)
+        expect( eval('42 - date', data) ).is.instanceOf(TypeError)
+        expect( eval('42 - boxedNum', data) ).equals(42 - 2)
+        expect( eval('42 - boxedStr', data) ).is.instanceOf(TypeError)
+        expect( eval('42 - TRUE', data) ).equals(42 - 1)
+
+        expect( eval('42 / 42', data) ).equals(42 / 42)
+        expect( eval('42 / "42"', data) ).equals(42 / 42)
+        expect( eval('"42" / 42', data) ).equals(42 / 42)
+        expect( eval('42 / "hello"', data) ).is.instanceOf(TypeError)
+        expect( eval('42 / date', data) ).is.instanceOf(TypeError)
+        expect( eval('42 / boxedNum', data) ).equals(42 / 2)
+        expect( eval('42 / boxedStr', data) ).is.instanceOf(TypeError)
+        expect( eval('42 / TRUE', data) ).equals(42 / 1)
+
+        expect( eval('42 ^ 2', data) ).equals(Math.pow(42, 2))
+        expect( eval('42 ^ "2"', data) ).equals(Math.pow(42, 2))
+        expect( eval('"42" ^ 2', data) ).equals(Math.pow(42, 2))
+        expect( eval('42 ^ "hello"', data) ).is.instanceOf(TypeError)
+        expect( eval('42 ^ date', data) ).is.instanceOf(TypeError)
+        expect( eval('42 ^ boxedNum', data) ).equals(Math.pow(42, 2))
+        expect( eval('42 ^ boxedStr', data) ).is.instanceOf(TypeError)
+        expect( eval('42 ^ TRUE', data) ).equals(Math.pow(42, 1))
     })
 
     it('does strict equality', () => {

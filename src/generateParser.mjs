@@ -41,7 +41,7 @@ const grammar = {
             [_`else[^\w]`, `return "else";`],
             [_`mod[^\w]` , `return "mod" ;`],
 
-            [_`\s+`,  ''], // skip whitespace
+            [_`\s+`, ''], // skip whitespace
             [_`[0-9]+(?:\.[0-9]+)?(?![0-9\.])`, `return "Number";`], // 212.321
 
             [_`[a-zA-Z$_][\.:a-zA-Z0-9$_]*`,
@@ -65,13 +65,6 @@ const grammar = {
                 return "String";`
             ], // "any \"escaped\" string"
 
-
-            // Deprecated syntax
-            [_`\%`, `return "%" ;`],
-            [_`\?`, `return "?" ;`],
-            [_`:`, `return ":" ;`],
-
-
             // End
             [_`$`, 'return "EndOfExpression";'],
         ]
@@ -83,7 +76,7 @@ const grammar = {
     // point: http://en.wikipedia.org/wiki/Order_of_operations#Programming_languages
     operators: [
         ['left', '|'],
-        ['right', 'if', 'then', 'else', /* deprecated: */ '?', ':'],
+        ['right', 'if', 'then', 'else'],
         ['left', '??'],
         ['left', 'or'],
         ['left', 'and'],
@@ -93,7 +86,7 @@ const grammar = {
         ['left', 'CHAINEDREL'],
         ['left', '&'],
         ['left', '+', '-'],
-        ['left', '*', '/', 'mod', /* deprecated: */ '%'],
+        ['left', '*', '/', 'mod'],
         ['left', 'not', 'UMINUS'],
         ['right', '^'],
         ['left', 'of'],
@@ -136,11 +129,7 @@ const grammar = {
             ['Symbol ( )', parenless`call(${1})`],
             ['Symbol ( Arguments )', parenless`call(${1}, ${3})`],
 
-            ['Relation' , `$$ = yy.reduceRelation($1);`, {prec: '=='}],
-
-            // Deprecated
-            ['e % e' , parenless`std.warnDeprecated('modulo', ops['mod'](${1}, ${3}))`],
-            ['e ? e : e', parenless`std.warnDeprecated('ternary', ${bool}(${1}) ? ${3} : ${5})`],
+            ['Relation' , `$$ = yy.reduceRelation($1);`, {prec: '=='}]
         ],
         RelationalOperator: [
             noop`==`, noop`!=`, noop`~=`, noop`<`,

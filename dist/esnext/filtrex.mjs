@@ -309,11 +309,10 @@ export function compileExpression(expression, options) {
         '-': (a, b) => b === undefined ? -num(a) : num(a) - num(b),
         '*': (a, b) => num(a) * num(b),
         '/': (a, b) => num(a) / num(b),
-        
-        '&': (a, b) => str(a) + str(b),
-
-        '^': (a, b) => Math.pow(num(a), num(b)),
+        '^': (a, b) => Math.pow(num(a), num(b)),        
         'mod': (a, b) => mod(num(a), num(b)),
+
+        '&': (a, b) => str(a) + str(b),
 
         '==': (a, b) => a === b,
         '!=': (a, b) => a !== b,
@@ -325,12 +324,7 @@ export function compileExpression(expression, options) {
 
         '~=': (a, b) => RegExp(str(b)).test(str(a)),
 
-        '??': (a, b) => {
-            if (a == null) return b
-            if (typeof a === 'string') return a === '' ? b : a
-            if (Array.isArray(a)) return a.length === 0 ? b : a
-            return a
-        } 
+        '??': (a, b) => functions.empty(a) ? b : a
     }
 
     if (operators) {

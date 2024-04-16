@@ -40,7 +40,6 @@ describe('Arithmetics', () => {
         expect( eval('max(2, 5, 6, 1, 9, 12)') ).equals(12);
     });
 
-
     it('can do comparisons', () => {
         expect( eval('foo == 4', {foo: 4}) ).equals(true);
         expect( eval('foo == 4', {foo: 3}) ).equals(false);
@@ -73,7 +72,6 @@ describe('Arithmetics', () => {
         expect( eval('"abc" == "abc" ~= "a.c" == "a.c" != "abc"') ).equals(true)
     })
 
-
     it('can do boolean logic', () => {
         const obj = { T: true, F: false };
 
@@ -94,14 +92,12 @@ describe('Arithmetics', () => {
         expect( eval('not T and F', obj)    ).equals(false);
     });
 
-
     it('does modulo correctly', () => {
         expect( eval('10 mod 2') ).equals(0)
         expect( eval('11 mod 2') ).equals(1)
         expect( eval('-1 mod 2') ).equals(1)
         expect( eval('-0.1 mod 5') ).equals(4.9)
     })
-
 
     it('exponentiation has precedence over unary minus', () => {
         expect( eval('-x^2', {x:2}) ).equals(-4)
