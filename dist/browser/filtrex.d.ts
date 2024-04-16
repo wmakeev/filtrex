@@ -122,14 +122,16 @@ export interface Options
 }
 
 export interface Operators {
+    '|'?: (a: any, b: any) => any
+
     '+'?: (a: any, b: any) => any
     '-'?: (a: any, b?: any) => any
     '*'?: (a: any, b: any) => any
     '/'?: (a: any, b: any) => any
-    '&'?: (a: any, b: any) => any
-
-    '%'?: (a: any, b: any) => any
     '^'?: (a: any, b: any) => any
+    'mod'?: (a: any, b: any) => any
+
+    '&'?: (a: any, b: any) => any
 
     '==': (a: any, b: any) => boolean
     '!=': (a: any, b: any) => boolean
@@ -140,6 +142,8 @@ export interface Operators {
     '>'?: (a: any, b: any) => boolean
 
     '~='?: (a: any, b: any) => boolean
+
+    '??'?: (a: any, b: any) => boolean
 }
 
 /**
@@ -223,3 +227,12 @@ export function useDotAccessOperatorAndOptionalChaining(
     object: any,
     type: 'unescaped' | 'single-quoted'
 )
+
+export const cast = {
+    asBoolean: (val: any) => boolean,
+    asNumber: (val: any) => number,
+    asSimple: (val: any) => number | string | boolean, 
+    asArray: (val: any) => Array<any>,
+    asString: (val: any) => string,
+    asFunction: (val: any) => (...args: any[]) => any
+}

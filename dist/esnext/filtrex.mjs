@@ -3,6 +3,15 @@ import { parser } from './parser.mjs'
 import { hasOwnProperty, bool, num, simple, mod, arr, str, flatten, code, ensureFunc } from './utils.mjs'
 import { UnknownFunctionError, UnknownPropertyError, UnknownOptionError, InternalError } from './errors.mjs'
 
+export const cast = {
+    asBoolean: bool,
+    asNumber: num,
+    asSimple: simple, 
+    asArray: arr,
+    asString: str,
+    asFunction: ensureFunc
+}
+
 // Shared utility functions
 const std =
 {

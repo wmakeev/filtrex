@@ -2514,8 +2514,6 @@ function arr(value) {
 }
 
 function ensureFunc(value) {
-  value = unwrap(value); // TODO Usefull?
-
   if (typeof value === 'function') return value;
   throw new UnexpectedTypeError('function', prettyType(value));
 }
@@ -2544,8 +2542,16 @@ function flatten(input) {
 
   return res.reverse();
 } // the parser is dynamically generated from generateParser.js at compile time
-// Shared utility functions
 
+
+var cast = {
+  asBoolean: bool,
+  asNumber: num,
+  asSimple: simple,
+  asArray: arr,
+  asString: str,
+  asFunction: ensureFunc
+}; // Shared utility functions
 
 var std = {
   isfn: function isfn(fns, funcName) {
@@ -2950,6 +2956,7 @@ function compileExpression(expression, options) {
   };
 }
 
+exports.cast = cast;
 exports.compileExpression = compileExpression;
 exports.useDotAccessOperator = useDotAccessOperator;
 exports.useDotAccessOperatorAndOptionalChaining = useDotAccessOperatorAndOptionalChaining;

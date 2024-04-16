@@ -2734,8 +2734,6 @@ var filtrex = (function (exports) {
     }
   }
   function ensureFunc(value) {
-    value = unwrap(value); // TODO Usefull?
-
     if (typeof value === 'function') return value;
     throw new UnexpectedTypeError('function', prettyType(value));
   }
@@ -2763,6 +2761,15 @@ var filtrex = (function (exports) {
 
     return res.reverse();
   }
+
+  var cast = {
+    asBoolean: bool,
+    asNumber: num,
+    asSimple: simple,
+    asArray: arr,
+    asString: str,
+    asFunction: ensureFunc
+  }; // Shared utility functions
 
   var std = {
     isfn: function isfn(fns, funcName) {
@@ -3164,6 +3171,7 @@ var filtrex = (function (exports) {
     };
   }
 
+  exports.cast = cast;
   exports.compileExpression = compileExpression;
   exports.useDotAccessOperator = useDotAccessOperator;
   exports.useDotAccessOperatorAndOptionalChaining = useDotAccessOperatorAndOptionalChaining;
