@@ -59,7 +59,13 @@ export function prettyType(value) {
     if (value === true) return 'true'
     if (value === false) return 'false'
 
-    if (typeof value === 'number') return 'number'
+    if (typeof value === 'number') {
+        if (Number.isFinite(value)) return 'number'
+        else if (value === Number.NEGATIVE_INFINITY) return '-Infinity'
+        else if (value === Number.POSITIVE_INFINITY) return 'Infinity'
+        else return 'NaN'
+    }
+    
     if (typeof value === 'string') return 'text'
 
     if (typeof value !== 'object' && typeof value !== 'function')
@@ -77,7 +83,12 @@ export function prettyType(value) {
 export function num(value) {
     value = unwrap(value)
     
-    if (typeof value === 'number') return value
+    if (typeof value === 'number') {
+        if (!Number.isFinite(value)) {
+            throw new UnexpectedTypeError('number', prettyType(value))
+        }
+        return value
+    }
 
     if (typeof value === 'string') {
         if (value === '') return 0

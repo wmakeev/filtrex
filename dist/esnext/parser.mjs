@@ -2031,127 +2031,129 @@ var _parser = (function() {
             var YYSTATE = YY_START
             switch ($avoiding_name_collisions) {
                 case 0:
-                    return "*";
                     break;
                 case 1:
-                    return "/";
+                    return "*";
                     break;
                 case 2:
-                    return "-";
+                    return "/";
                     break;
                 case 3:
-                    return "+";
+                    return "-";
                     break;
                 case 4:
-                    return "&";
+                    return "+";
                     break;
                 case 5:
-                    return "^";
+                    return "&";
                     break;
                 case 6:
-                    return "(";
+                    return "^";
                     break;
                 case 7:
-                    return ")";
+                    return "(";
                     break;
                 case 8:
-                    return "[";
+                    return ")";
                     break;
                 case 9:
-                    return "]";
+                    return "[";
                     break;
                 case 10:
-                    return ",";
+                    return "]";
                     break;
                 case 11:
-                    return "==";
+                    return ",";
                     break;
                 case 12:
-                    return "!=";
+                    return "==";
                     break;
                 case 13:
-                    return "~=";
+                    return "!=";
                     break;
                 case 14:
-                    return ">=";
+                    return "~=";
                     break;
                 case 15:
-                    return "<=";
+                    return ">=";
                     break;
                 case 16:
-                    return "<";
+                    return "<=";
                     break;
                 case 17:
-                    return ">";
+                    return "<";
                     break;
                 case 18:
-                    return "|";
+                    return ">";
                     break;
                 case 19:
-                    return "??";
+                    return "|";
                     break;
                 case 20:
-                    return "notIn";
+                    return "??";
                     break;
                 case 21:
-                    return "and";
+                    return "notIn";
                     break;
                 case 22:
-                    return "or";
+                    return "and";
                     break;
                 case 23:
-                    return "not";
+                    return "or";
                     break;
                 case 24:
-                    return "in";
+                    return "not";
                     break;
                 case 25:
-                    return "of";
+                    return "in";
                     break;
                 case 26:
-                    return "if";
+                    return "of";
                     break;
                 case 27:
-                    return "then";
+                    return "if";
                     break;
                 case 28:
-                    return "else";
+                    return "then";
                     break;
                 case 29:
-                    return "mod";
+                    return "else";
                     break;
                 case 30:
+                    return "mod";
                     break;
                 case 31:
-                    return "Number";
                     break;
                 case 32:
+                    return "Number";
+                    break;
+                case 33:
                     yy_.yytext = JSON.stringify({
                         name: yy_.yytext,
                         type: 'unescaped'
                     });
                     return "Symbol";
                     break;
-                case 33:
+                case 34:
                     yy_.yytext = JSON.stringify({
                         name: yy.buildString("'", yy_.yytext),
                         type: 'single-quoted'
                     });
                     return "Symbol";
                     break;
-                case 34:
+                case 35:
                     yy_.yytext = JSON.stringify(yy.buildString('"', yy_.yytext));
                     return "String";
                     break;
-                case 35:
+                case 36:
                     return "EndOfExpression";
                     break;
             }
         };
-        lexer.rules = [/^(?:\*)/, /^(?:\/)/, /^(?:-)/, /^(?:\+)/, /^(?:&)/, /^(?:\^)/, /^(?:\()/, /^(?:\))/, /^(?:\[)/, /^(?:\])/, /^(?:\,)/, /^(?:==)/, /^(?:\!=)/, /^(?:\~=)/, /^(?:>=)/, /^(?:<=)/, /^(?:<)/, /^(?:>)/, /^(?:\|)/, /^(?:\?\?)/, /^(?:not\s+in[^\w])/, /^(?:and[^\w])/, /^(?:or[^\w])/, /^(?:not[^\w])/, /^(?:in[^\w])/, /^(?:of[^\w])/, /^(?:if[^\w])/, /^(?:then[^\w])/, /^(?:else[^\w])/, /^(?:mod[^\w])/, /^(?:\s+)/, /^(?:[0-9]+(?:\.[0-9]+)?(?![0-9\.]))/, /^(?:[a-zA-Z$_][\.:a-zA-Z0-9$_]*)/, /^(?:'(?:\\'|\\\\|[^'\\])*')/, /^(?:"(?:\\"|\\\\|[^"\\])*")/, /^(?:$)/];
+        lexer.rules = [/^(?:\(\*[^*]*\*+(?:[^)(*][^*]*\*+)*\))/, /^(?:\*)/, /^(?:\/)/, /^(?:-)/, /^(?:\+)/, /^(?:&)/, /^(?:\^)/, /^(?:\()/, /^(?:\))/, /^(?:\[)/, /^(?:\])/, /^(?:\,)/, /^(?:==)/, /^(?:\!=)/, /^(?:\~=)/, /^(?:>=)/, /^(?:<=)/, /^(?:<)/, /^(?:>)/, /^(?:\|)/, /^(?:\?\?)/, /^(?:not\s+in[^\w])/, /^(?:and[^\w])/, /^(?:or[^\w])/, /^(?:not[^\w])/, /^(?:in[^\w])/, /^(?:of[^\w])/, /^(?:if[^\w])/, /^(?:then[^\w])/, /^(?:else[^\w])/, /^(?:mod[^\w])/, /^(?:\s+)/, /^(?:[0-9]+(?:\.[0-9]+)?(?![0-9\.]))/, /^(?:[a-zA-Z$_][\.:a-zA-Z0-9$_]*)/, /^(?:'(?:\\'|\\\\|[^'\\])*')/, /^(?:"(?:\\"|\\\\|[^"\\])*")/, /^(?:$)/];
         lexer.conditions = {
             "INITIAL": {
-                "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35],
+                "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
                 "inclusive": true
             }
         };

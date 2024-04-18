@@ -10,6 +10,9 @@ const grammar = {
     // Lexical tokens
     lex: {
         rules: [
+            // Skip comments like `(* comment *)`
+            [_`\(\*[^*]*\*+(?:[^)(*][^*]*\*+)*\)`, ''],
+            
             [_`\*`, `return "*" ;`],
             [_`\/`, `return "/" ;`],
             [_`-` , `return "-" ;`],
@@ -40,30 +43,35 @@ const grammar = {
             [_`then[^\w]`, `return "then";`],
             [_`else[^\w]`, `return "else";`],
             [_`mod[^\w]` , `return "mod" ;`],
+            
+            // skip whitespace
+            [_`\s+`, ''],
 
-            [_`\s+`, ''], // skip whitespace
             [_`[0-9]+(?:\.[0-9]+)?(?![0-9\.])`, `return "Number";`], // 212.321
 
+            // some.Symbol22
             [_`[a-zA-Z$_][\.:a-zA-Z0-9$_]*`,
                 `yytext = JSON.stringify({
                     name: yytext,
                     type: 'unescaped'
                 });
                 return "Symbol";`
-            ], // some.Symbol22
-
+            ],
+            
+            // 'any \'escaped\' symbol'
             [_`'(?:\\'|\\\\|[^'\\])*'`,
                 `yytext = JSON.stringify({
                     name: yy.buildString("'", yytext),
                     type: 'single-quoted'
                 });
                 return "Symbol";`
-            ], // 'any \'escaped\' symbol'
+            ],
 
+            // "any \"escaped\" string"
             [_`"(?:\\"|\\\\|[^"\\])*"`,
                 `yytext = JSON.stringify(yy.buildString('"', yytext));
                 return "String";`
-            ], // "any \"escaped\" string"
+            ],
 
             // End
             [_`$`, 'return "EndOfExpression";'],

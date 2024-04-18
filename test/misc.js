@@ -85,6 +85,41 @@ describe('Various other things', () => {
         expect( eval(`"\uD800"`) ).equals("\uD800");
     });
 
+    it('comments support', () => {
+        expect( eval('(* comment *) "hello" == "hello"') ).equals(true);
+        expect( eval('"hello(* comment *)"') ).equals("hello(* comment *)");
+        
+        expect( eval(`
+            (**
+             * Some mutiline comment
+             **) "foo " & "hello(* comment *)" & (** comment*) " bar" &
+
+             (**) '=(* foo =*)42' (**** comment ***) & "-(* zoo **)" (**)
+                & " end"
+             (**)
+
+             (* end *)
+        `, {'=(* foo =*)42': 42}) ).equals("foo hello(* comment *) bar42-(* zoo **) end");
+
+        expect( eval(`
+            (**
+             * Some calculation
+             **)
+
+             (* sum 1 + 2 *)
+             (1 + 2) +
+
+             (* mult 3 * 4 *)
+             (3 * 4) +
+
+             (* div 12 / 3 *)
+             (12 / 3) + 
+             
+             (* prop *)
+             '=(* foo =*)42'
+        `, {'=(* foo =*)42': 42}) ).equals((1 + 2) + (3 * 4) + (12 / 3) + 42);
+    })
+
     it('regexp support', () => {
         expect( eval('foo ~= "^[hH]ello"', {foo:'hello'}) ).equals(true);
         expect( eval('foo ~= "^[hH]ello"', {foo:'bye'  }) ).equals(false);

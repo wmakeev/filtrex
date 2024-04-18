@@ -2101,128 +2101,131 @@ var _parser = function () {
     lexer.performAction = function anonymous(yy, yy_, $avoiding_name_collisions, YY_START) {
       switch ($avoiding_name_collisions) {
         case 0:
-          return "*";
-
-        case 1:
-          return "/";
-
-        case 2:
-          return "-";
-
-        case 3:
-          return "+";
-
-        case 4:
-          return "&";
-
-        case 5:
-          return "^";
-
-        case 6:
-          return "(";
-
-        case 7:
-          return ")";
-
-        case 8:
-          return "[";
-
-        case 9:
-          return "]";
-
-        case 10:
-          return ",";
-
-        case 11:
-          return "==";
-
-        case 12:
-          return "!=";
-
-        case 13:
-          return "~=";
-
-        case 14:
-          return ">=";
-
-        case 15:
-          return "<=";
-
-        case 16:
-          return "<";
-
-        case 17:
-          return ">";
-
-        case 18:
-          return "|";
-
-        case 19:
-          return "??";
-
-        case 20:
-          return "notIn";
-
-        case 21:
-          return "and";
-
-        case 22:
-          return "or";
-
-        case 23:
-          return "not";
-
-        case 24:
-          return "in";
-
-        case 25:
-          return "of";
-
-        case 26:
-          return "if";
-
-        case 27:
-          return "then";
-
-        case 28:
-          return "else";
-
-        case 29:
-          return "mod";
-
-        case 30:
           break;
 
+        case 1:
+          return "*";
+
+        case 2:
+          return "/";
+
+        case 3:
+          return "-";
+
+        case 4:
+          return "+";
+
+        case 5:
+          return "&";
+
+        case 6:
+          return "^";
+
+        case 7:
+          return "(";
+
+        case 8:
+          return ")";
+
+        case 9:
+          return "[";
+
+        case 10:
+          return "]";
+
+        case 11:
+          return ",";
+
+        case 12:
+          return "==";
+
+        case 13:
+          return "!=";
+
+        case 14:
+          return "~=";
+
+        case 15:
+          return ">=";
+
+        case 16:
+          return "<=";
+
+        case 17:
+          return "<";
+
+        case 18:
+          return ">";
+
+        case 19:
+          return "|";
+
+        case 20:
+          return "??";
+
+        case 21:
+          return "notIn";
+
+        case 22:
+          return "and";
+
+        case 23:
+          return "or";
+
+        case 24:
+          return "not";
+
+        case 25:
+          return "in";
+
+        case 26:
+          return "of";
+
+        case 27:
+          return "if";
+
+        case 28:
+          return "then";
+
+        case 29:
+          return "else";
+
+        case 30:
+          return "mod";
+
         case 31:
-          return "Number";
+          break;
 
         case 32:
+          return "Number";
+
+        case 33:
           yy_.yytext = JSON.stringify({
             name: yy_.yytext,
             type: 'unescaped'
           });
           return "Symbol";
 
-        case 33:
+        case 34:
           yy_.yytext = JSON.stringify({
             name: yy.buildString("'", yy_.yytext),
             type: 'single-quoted'
           });
           return "Symbol";
 
-        case 34:
+        case 35:
           yy_.yytext = JSON.stringify(yy.buildString('"', yy_.yytext));
           return "String";
 
-        case 35:
+        case 36:
           return "EndOfExpression";
       }
     };
 
-    lexer.rules = [/^(?:\*)/, /^(?:\/)/, /^(?:-)/, /^(?:\+)/, /^(?:&)/, /^(?:\^)/, /^(?:\()/, /^(?:\))/, /^(?:\[)/, /^(?:\])/, /^(?:\,)/, /^(?:==)/, /^(?:\!=)/, /^(?:\~=)/, /^(?:>=)/, /^(?:<=)/, /^(?:<)/, /^(?:>)/, /^(?:\|)/, /^(?:\?\?)/, /^(?:not\s+in[^\w])/, /^(?:and[^\w])/, /^(?:or[^\w])/, /^(?:not[^\w])/, /^(?:in[^\w])/, /^(?:of[^\w])/, /^(?:if[^\w])/, /^(?:then[^\w])/, /^(?:else[^\w])/, /^(?:mod[^\w])/, /^(?:\s+)/, /^(?:[0-9]+(?:\.[0-9]+)?(?![0-9\.]))/, /^(?:[a-zA-Z$_][\.:a-zA-Z0-9$_]*)/, /^(?:'(?:\\'|\\\\|[^'\\])*')/, /^(?:"(?:\\"|\\\\|[^"\\])*")/, /^(?:$)/];
+    lexer.rules = [/^(?:\(\*[^*]*\*+(?:[^)(*][^*]*\*+)*\))/, /^(?:\*)/, /^(?:\/)/, /^(?:-)/, /^(?:\+)/, /^(?:&)/, /^(?:\^)/, /^(?:\()/, /^(?:\))/, /^(?:\[)/, /^(?:\])/, /^(?:\,)/, /^(?:==)/, /^(?:\!=)/, /^(?:\~=)/, /^(?:>=)/, /^(?:<=)/, /^(?:<)/, /^(?:>)/, /^(?:\|)/, /^(?:\?\?)/, /^(?:not\s+in[^\w])/, /^(?:and[^\w])/, /^(?:or[^\w])/, /^(?:not[^\w])/, /^(?:in[^\w])/, /^(?:of[^\w])/, /^(?:if[^\w])/, /^(?:then[^\w])/, /^(?:else[^\w])/, /^(?:mod[^\w])/, /^(?:\s+)/, /^(?:[0-9]+(?:\.[0-9]+)?(?![0-9\.]))/, /^(?:[a-zA-Z$_][\.:a-zA-Z0-9$_]*)/, /^(?:'(?:\\'|\\\\|[^'\\])*')/, /^(?:"(?:\\"|\\\\|[^"\\])*")/, /^(?:$)/];
     lexer.conditions = {
       "INITIAL": {
-        "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35],
+        "rules": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
         "inclusive": true
       }
     };
@@ -2450,7 +2453,11 @@ function prettyType(value) {
   if (value === null) return 'null';
   if (value === true) return 'true';
   if (value === false) return 'false';
-  if (typeof value === 'number') return 'number';
+
+  if (typeof value === 'number') {
+    if (Number.isFinite(value)) return 'number';else if (value === Number.NEGATIVE_INFINITY) return '-Infinity';else if (value === Number.POSITIVE_INFINITY) return 'Infinity';else return 'NaN';
+  }
+
   if (typeof value === 'string') return 'text';
   if (_typeof(value) !== 'object' && typeof value !== 'function') return 'unknown type';
   if (Array.isArray(value)) return 'list';
@@ -2460,7 +2467,14 @@ function prettyType(value) {
 
 function num(value) {
   value = unwrap(value);
-  if (typeof value === 'number') return value;
+
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) {
+      throw new UnexpectedTypeError('number', prettyType(value));
+    }
+
+    return value;
+  }
 
   if (typeof value === 'string') {
     if (value === '') return 0;
