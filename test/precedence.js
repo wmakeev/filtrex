@@ -1,4 +1,4 @@
-const { compileExpression } = require("../dist/cjs/filtrex");
+const { compileExpression, prettyType } = require("../dist/cjs/filtrex");
 
 const { describe, it } = require("mocha");
 
@@ -30,7 +30,7 @@ const numbers = [
     { a: 1, b: 1, c: 1, d: 0 },
     { a: 1, b: 1, c: 1, d: 1 },
 
-    { a: 48.63, b: -96e-4, c: 3.142, d: -2.1 }
+    { a: 48.63, b: -96e-4, c: 3, d: -2.1 }
 ];
 
 const booleans = [
@@ -102,33 +102,61 @@ describe('Operator precedence', () => {
         for (const data of numbers) {
             const { a, b, c, d } = data;
 
-            expect(eval(`a + b * c ^ d`, data)).eql( a + (b * (c ** d)) );
-            expect(eval(`a + b ^ c * d`, data)).eql( a + ((b ** c) * d) );
-            expect(eval(`a ^ b + c * d`, data)).eql( (a ** b) + (c * d) );
-            expect(eval(`a ^ b * c + d`, data)).eql( ((a ** b) * c) + d );
-            expect(eval(`a * b ^ c + d`, data)).eql( (a * (b ** c) + d) );
-            expect(eval(`a * b + c ^ d`, data)).eql( (a * b) + (c ** d) );
+            const cases = [
+                [`a + b * c ^ d`, a + (b * (c ** d))],
+                [`a + b ^ c * d`, a + ((b ** c) * d)],
+                [`a ^ b + c * d`, (a ** b) + (c * d)],
+                [`a ^ b * c + d`, ((a ** b) * c) + d],
+                [`a * b ^ c + d`, (a * (b ** c) + d)],
+                [`a * b + c ^ d`, (a * b) + (c ** d)],
 
-            expect(eval(`a - b / c ^ d`, data)).eql( a - (b / (c ** d)) );
-            expect(eval(`a - b ^ c / d`, data)).eql( a - ((b ** c) / d) );
-            expect(eval(`a ^ b - c / d`, data)).eql( (a ** b) - (c / d) );
-            expect(eval(`a ^ b / c - d`, data)).eql( ((a ** b) / c) - d );
-            expect(eval(`a / b ^ c - d`, data)).eql( (a / (b ** c) - d) );
-            expect(eval(`a / b - c ^ d`, data)).eql( (a / b) - (c ** d) );
+                [`a - b / c ^ d`, a - (b / (c ** d))],
+                [`a - b ^ c / d`, a - ((b ** c) / d)],
+                [`a ^ b - c / d`, (a ** b) - (c / d)],
+                [`a ^ b / c - d`, ((a ** b) / c) - d],
+                [`a / b ^ c - d`, (a / (b ** c) - d)],
+                [`a / b - c ^ d`, (a / b) - (c ** d)],
+                
+                [`-a + -b * -c ^ -d`, (-a) + ((-b) * -((c) ** (-d)))],
+                [`-a + -b ^ -c * -d`, (-a) + -((b ** (-c)) * (-d))],
+                [`-a ^ -b + -c * -d`, -(a ** (-b)) + ((-c) * (-d))],
+                [`-a ^ -b * -c + -d`, (-(a ** (-b)) * (-c)) + (-d)],
+                [`-a * -b ^ -c + -d`, ((-a) * -(b ** (-c)) + (-d))],
+                [`-a * -b + -c ^ -d`, ((-a) * (-b)) + -((c) ** (-d))],
 
-            expect(eval(`-a + -b * -c ^ -d`, data)).eql( (-a) + ((-b) * -((c) ** (-d))) );
-            expect(eval(`-a + -b ^ -c * -d`, data)).eql( (-a) + -((b ** (-c)) * (-d)) );
-            expect(eval(`-a ^ -b + -c * -d`, data)).eql( -(a ** (-b)) + ((-c) * (-d)) );
-            expect(eval(`-a ^ -b * -c + -d`, data)).eql( (-(a ** (-b)) * (-c)) + (-d) );
-            expect(eval(`-a * -b ^ -c + -d`, data)).eql( ((-a) * -(b ** (-c)) + (-d)) );
-            expect(eval(`-a * -b + -c ^ -d`, data)).eql( ((-a) * (-b)) + -((c) ** (-d)) );
+                [`-a - -b / -c ^ -d`, (-a) - ((-b) / -((c) ** (-d)))],
+                [`-a - -b ^ -c / -d`, (-a) - -((b ** (-c)) / (-d))],
+                [`-a ^ -b - -c / -d`, -(a ** (-b)) - ((-c) / (-d))],
+                [`-a ^ -b / -c - -d`, (-(a ** (-b)) / (-c)) - (-d)],
+                [`-a / -b ^ -c - -d`, ((-a) / -(b ** (-c)) - (-d))],
+                [`-a / -b - -c ^ -d`, ((-a) / (-b)) - -((c) ** (-d))]
+            ]
 
-            expect(eval(`-a - -b / -c ^ -d`, data)).eql( (-a) - ((-b) / -((c) ** (-d))) );
-            expect(eval(`-a - -b ^ -c / -d`, data)).eql( (-a) - -((b ** (-c)) / (-d)) );
-            expect(eval(`-a ^ -b - -c / -d`, data)).eql( -(a ** (-b)) - ((-c) / (-d)) );
-            expect(eval(`-a ^ -b / -c - -d`, data)).eql( (-(a ** (-b)) / (-c)) - (-d) );
-            expect(eval(`-a / -b ^ -c - -d`, data)).eql( ((-a) / -(b ** (-c)) - (-d)) );
-            expect(eval(`-a / -b - -c ^ -d`, data)).eql( ((-a) / (-b)) - -((c) ** (-d)) );
+            for (let case_ of cases) {
+                const [exp, expected] = case_
+                
+                let actual
+
+                try {
+                    actual = eval(exp, data)
+                } catch (err) {
+                    actual = err
+                }
+
+                if (typeof actual === 'number') {
+                    expect(actual).eql(
+                        expected, 
+                        `expression "${exp}", where a=${a}, b=${b}, c=${case_}, d=${d}`
+                    )
+                } else {
+                    expect(actual).instanceOf(
+                        TypeError,
+                        `expression "${exp}", where a=${a}, b=${b}, c=${c}, d=${d}`
+                    )
+
+                    expect(actual.expectedType).eql('number')
+                }
+            }
         }
     })
 
