@@ -24,7 +24,7 @@ describe('Various other things', () => {
         let toFixed = n => x => x.toFixed(n)
         let trim = s => s.trim()
 
-        let options = { extraFunctions: {add, mult, toFixed, trim} };
+        let options = { symbols: {add, mult, toFixed, trim} };
         
         expect( compileExpression('v | add(3)', options)({v:2}) ).equals(5);
         expect( compileExpression('v | add(3) | add(5) | toFixed(2)', options)({v:2}) ).equals('10.00');
@@ -188,7 +188,7 @@ describe('Various other things', () => {
         var kitchenSink = compileExpression(
             'if 4 > lowNumber * 2 and (max(a, b) < 20 or foo:bar) then 1.1 else 9.4',
             {
-                extraFunctions: {
+                symbols: {
                     max: Math.max
                 }
             }
@@ -201,7 +201,7 @@ describe('Various other things', () => {
         let triple = x => x * 3;
         let trim = str => str.trim();
 
-        let options = { extraFunctions: {triple, 'str:trim': trim} };
+        let options = { symbols: {triple, 'str:trim': trim} };
         
         expect( compileExpression('triple(v)', options)({v:7}) ).equals(21);
         expect( compileExpression('str:trim(gooStr)', options)({gooStr:"  goo "}) ).equals('goo');
@@ -258,16 +258,16 @@ describe('Various other things', () => {
     });
 
     it('throws when using old API', () => {
-        let extraFunctions = { myCustomFunc: n => n*n };
+        let symbols = { myCustomFunc: n => n*n };
         let customProp = () => 'foo';
 
-        expect( () => compileExpression('', extraFunctions) ).throws();
+        expect( () => compileExpression('', symbols) ).throws();
         expect( () => compileExpression('', {}, customProp) ).throws();
-        expect( () => compileExpression('', extraFunctions, customProp) ).throws();
+        expect( () => compileExpression('', symbols, customProp) ).throws();
     });
 
     it('doesn\'t recognise non-callable values as extra functions', () => {
-        let options = { extraFunctions: { sqrt: undefined, a: 42, b: {} } };
+        let options = { symbols: { sqrt: undefined, a: 42, b: {} } };
         let eval = str => compileExpression(str, options)();
 
         expect(eval('a()')).is.instanceOf(ReferenceError);
@@ -287,8 +287,8 @@ describe('Various other things', () => {
         expect( eval('4 + 3 not in (6, 8)') ).equals(true);
     })
 
-    it('constants basics', () => {
-        const options = { constants: { pi: Math.PI, true: true, false: false }}
+    it('symbols basics', () => {
+        const options = { symbols: { pi: Math.PI, true: true, false: false }}
 
         expect(
             compileExpression('2 * pi * radius', options)({ radius: 6 })
@@ -307,7 +307,7 @@ describe('Various other things', () => {
         ).equals(3)
 
 
-        const options2 = { constants: { a: "a_const " } }
+        const options2 = { symbols: { a: "a_const " } }
         const data = { a: "a_data ", b: "b_data " }
         const expr = `'a' & a & 'b' & b`
 

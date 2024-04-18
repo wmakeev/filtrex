@@ -53,7 +53,7 @@
  *  * `sqrt(x)` Square root
  *  * `exists(x)` True if `x` is neither `undefined` nor `null`
  *  * `empty(x)` True if `x` doesn't exist, it is an empty string or empty array
- *  * `myFooBarFunction(x)` Custom function defined in `options.extraFunctions`
+ *  * `myFooBarFunction(x)` Custom function defined in `options.symbols`
  */
 export function compileExpression(
     expression: string,
@@ -63,21 +63,20 @@ export function compileExpression(
 
 export interface Options
 {
+    // TODO Fix docs comments
+
     /**
      * When integrating in to your application, you can add your own custom functions.
      * These functions will be available in the expression in the same way as `sqrt(x)` and `round(x)`.
      */
-    extraFunctions?: {
-        [T: string]: Function
-    }
 
     /**
-     * Pass constants like `pi` or `true` to the expression without having to modify data.
-     * These constants will shadow identically named properties on the data object. In order
-     * to access `data.pi` instead of `constants.pi`, for example, use a single-quoted
+     * Pass symbols like `pi` or `true` to the expression without having to modify data.
+     * These symbols will shadow identically named properties on the data object. In order
+     * to access `data.pi` instead of `symbols.pi`, for example, use a single-quoted
      * symbol in your expression, ie. `'pi'` instead of just `pi`.
      */
-    constants?: {
+    symbols?: {
         [T: string]: any
     }
 

@@ -44,8 +44,11 @@ describe('Security', () => {
 
         expect(
             compileExpression(
-                "'undefined:(global.p0wned=true)));((true?(x=>x)'()", { extraFunctions:
-                {'undefined:(global.p0wned=true)));((true?(x=>x)': ()=>42} }
+                "'undefined:(global.p0wned=true)));((true?(x=>x)'()", { 
+                    symbols: {
+                        'undefined:(global.p0wned=true)));((true?(x=>x)': ()=>42
+                    }
+                }
             )()
         ).equals(42);
 
@@ -95,7 +98,7 @@ describe('Security', () => {
 
 
     it('cannot throw an error', () => {
-        let options = { extraFunctions: {throw: () => {throw new Error;}} };
+        let options = { symbols: {throw: () => {throw new Error;}} };
         let f = compileExpression('throw()', options);
         expect( f ).does.not.throw();
         expect( f() ).is.instanceOf(Error);

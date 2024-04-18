@@ -1,6 +1,32 @@
 var filtrex = (function (exports) {
   'use strict';
 
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      enumerableOnly && (symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      })), keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = null != arguments[i] ? arguments[i] : {};
+      i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+
+    return target;
+  }
+
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
@@ -2483,7 +2509,7 @@ var filtrex = (function (exports) {
   /**
    * Runtime error – user attempted to call a function
    * which is not a predefined function, nor specified
-   * in `options.extraFunctions`.
+   * in `options.symbols`.
    *
    * @prop {string} functionName
    * @prop {string} I18N_STRING has the value `'UNKNOWN_FUNCTION'`
@@ -2510,7 +2536,7 @@ var filtrex = (function (exports) {
   }( /*#__PURE__*/_wrapNativeSuper(ReferenceError));
   /**
    * Runtime error – user attempted to access a property which
-   * is not present in the `data` object, nor in the `constants`.
+   * is not present in the `data` object, nor in the `symbols`.
    * If the property is meant to be empty, use `undefined` or
    * `null` as its value. If you need to use optional properties
    * in your `data`, define a `customProp` function.
@@ -2806,19 +2832,13 @@ var filtrex = (function (exports) {
     warnDeprecated: function () {
       var warnMax = 3;
       var warnedTimes = {
-        ternary: 0,
-        modulo: 0
+        noop: 0
       };
       return function (cause, value) {
         switch (cause) {
-          case 'ternary':
-            if (warnedTimes.ternary++ >= warnMax) break;
-            console.warn("The use of ? and : as conditional operators has been deprecated " + "in Filtrex v3 in favor of the if..then..else ternary operator. " + "See issue #34 for more information.");
-            break;
-
-          case 'modulo':
-            if (warnedTimes.modulo++ >= warnMax) break;
-            console.warn("The use of '%' as a modulo operator has been deprecated in Filtrex v3 " + "in favor of the 'mod' operator. You can use it like this: '3 mod 2 == 1'. " + "See issue #48 for more information.");
+          case 'noop':
+            if (warnedTimes.noop++ >= warnMax) break;
+            console.warn("noop");
             break;
         }
 
@@ -2985,7 +3005,16 @@ var filtrex = (function (exports) {
     }
 
     return obj;
-  }
+  } // Functions available to the expression
+
+  var builtinFunctions = {
+    exists: function exists(v) {
+      return v !== undefined && v !== null;
+    },
+    empty: function empty(v) {
+      return v === undefined || v === null || v === '' || Array.isArray(v) && v.length === 0;
+    }
+  };
   /**
    * A simple, safe, JavaScript expression engine, allowing end-users to enter arbitrary expressions without p0wning you.
    *
@@ -3031,44 +3060,27 @@ var filtrex = (function (exports) {
    *  * `( x, y, z )` Array of elements x, y and z
    *  * `exists(x)` True if `x` is neither `undefined` nor `null`
    *  * `empty(x)` True if `x` doesn't exist, it is an empty string or empty array
-   *  * `myFooBarFunction(x)` Custom function defined in `options.extraFunctions`
+   *  * `myFooBarFunction(x)` Custom function defined in `options.symbols`
    */
 
   function compileExpression(expression, options) {
-    var _constants;
+    var _symbols;
 
     // Check and coerce arguments
     if (arguments.length > 2) throw new TypeError('Too many arguments.');
     options = _typeof(options) === "object" ? options : {};
-    var knownOptions = ['extraFunctions', 'constants', 'customProp', 'operators'];
+    var knownOptions = ['symbols', 'customProp', 'operators'];
     var _options = options,
-        extraFunctions = _options.extraFunctions,
-        constants = _options.constants,
+        symbols = _options.symbols,
         customProp = _options.customProp,
         operators = _options.operators;
 
     for (var _i = 0, _Object$keys = Object.keys(options); _i < _Object$keys.length; _i++) {
       var key = _Object$keys[_i];
       if (!knownOptions.includes(key)) throw new UnknownOptionError(key);
-    } // Functions available to the expression
-
-
-    var functions = {
-      exists: function exists(v) {
-        return v !== undefined && v !== null;
-      },
-      empty: function empty(v) {
-        return v === undefined || v === null || v === '' || Array.isArray(v) && v.length === 0;
-      }
-    };
-
-    if (extraFunctions) {
-      for (var _i2 = 0, _Object$keys2 = Object.keys(extraFunctions); _i2 < _Object$keys2.length; _i2++) {
-        var name = _Object$keys2[_i2];
-        functions[name] = extraFunctions[name];
-      }
     }
 
+    symbols = _objectSpread2(_objectSpread2({}, builtinFunctions), (_symbols = symbols) !== null && _symbols !== void 0 ? _symbols : {});
     var defaultOperators = {
       '|': function _(a, b) {
         return ensureFunc(b)(a);
@@ -3116,19 +3128,18 @@ var filtrex = (function (exports) {
         return RegExp(str(b)).test(str(a));
       },
       '??': function _(a, b) {
-        return functions.empty(a) ? b : a;
+        return symbols.empty(a) ? b : a;
       }
     };
 
     if (operators) {
-      for (var _i3 = 0, _Object$keys3 = Object.keys(operators); _i3 < _Object$keys3.length; _i3++) {
-        var _name = _Object$keys3[_i3];
-        defaultOperators[_name] = operators[_name];
+      for (var _i2 = 0, _Object$keys2 = Object.keys(operators); _i2 < _Object$keys2.length; _i2++) {
+        var name = _Object$keys2[_i2];
+        defaultOperators[name] = operators[name];
       }
     }
 
-    operators = defaultOperators;
-    constants = (_constants = constants) !== null && _constants !== void 0 ? _constants : {}; // Compile the expression
+    operators = defaultOperators; // Compile the expression
 
     var js = flatten(parser.parse(expression));
     js.unshift('return ');
@@ -3169,8 +3180,7 @@ var filtrex = (function (exports) {
       var name = _ref2.name,
           type = _ref2.type;
       var isUnescaped = type === 'unescaped';
-      if (isUnescaped && hasOwnProperty(constants, name)) return constants[name];
-      if (isUnescaped && hasOwnProperty(functions, name) && typeof functions[name] === "function") return functions[name];
+      if (isUnescaped && hasOwnProperty(symbols, name)) return symbols[name];
       return nakedProp(name, obj, type);
     } // Patch together and return
 
@@ -3178,7 +3188,7 @@ var filtrex = (function (exports) {
     var func = new Function('call', 'ops', 'std', 'prop', 'data', js.join(''));
     return function (data) {
       try {
-        return func(createCall(functions), operators, std, prop, data);
+        return func(createCall(symbols), operators, std, prop, data);
       } catch (e) {
         return e;
       }

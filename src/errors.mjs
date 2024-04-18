@@ -1,13 +1,12 @@
 /**
  * Runtime error – user attempted to call a function
  * which is not a predefined function, nor specified
- * in `options.extraFunctions`.
+ * in `options.symbols`.
  *
  * @prop {string} functionName
  * @prop {string} I18N_STRING has the value `'UNKNOWN_FUNCTION'`
  */
-export class UnknownFunctionError
-extends ReferenceError {
+export class UnknownFunctionError extends ReferenceError {
     I18N_STRING = 'UNKNOWN_FUNCTION'
 
     constructor (funcName) {
@@ -18,7 +17,7 @@ extends ReferenceError {
 
 /**
  * Runtime error – user attempted to access a property which
- * is not present in the `data` object, nor in the `constants`.
+ * is not present in the `data` object, nor in the `symbols`.
  * If the property is meant to be empty, use `undefined` or
  * `null` as its value. If you need to use optional properties
  * in your `data`, define a `customProp` function.
@@ -26,8 +25,7 @@ extends ReferenceError {
  * @prop {string} propertyName
  * @prop {string} I18N_STRING has the value `'UNKNOWN_PROPERTY'`
  */
-export class UnknownPropertyError
-extends ReferenceError {
+export class UnknownPropertyError extends ReferenceError {
     I18N_STRING = 'UNKNOWN_PROPERTY'
 
     constructor (propName) {

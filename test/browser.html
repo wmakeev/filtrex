@@ -9,7 +9,7 @@
         <script>
             const expr = '(1 in (1, 2, 3), 1 + one(), PI)'
             const extraFunctions = { one: () => 1 }
-            const f = filtrex.compileExpression(expr, { extraFunctions })
+            const f = filtrex.compileExpression(expr, { symbols: extraFunctions })
             const result = f(Math)
 
             if (!Array.isArray(result)) throw 'Not an array'

@@ -32,7 +32,7 @@ function updateExpression() {
   }
 
   try {
-    var plotFunction = filtrex.compileExpression(expression, { extraFunctions }); // <-- Filtrex!
+    var plotFunction = filtrex.compileExpression(expression, { symbols: extraFunctions }); // <-- Filtrex!
     input.css('background-color', '#dfd');
   } catch (e) {
     // Failed to parse expression. Don't plot.

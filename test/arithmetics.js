@@ -4,7 +4,7 @@ const { describe, it } = require("mocha");
 const { expect } = require("chai");
 
 const eval = (str, obj) => compileExpression(str, {
-    extraFunctions: {
+    symbols: {
         'min': Math.min,
         'max': Math.max
     }

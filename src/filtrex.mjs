@@ -39,27 +39,15 @@ const std =
         const warnMax = 3
 
         let warnedTimes = {
-            ternary: 0,
-            modulo: 0
+            noop: 0
         }
 
         return (cause, value) => {
             switch (cause) {
-                case 'ternary':
-                    if (warnedTimes.ternary++ >= warnMax) break
+                case 'noop':
+                    if (warnedTimes.noop++ >= warnMax) break
                     console.warn(
-                        "The use of ? and : as conditional operators has been deprecated " +
-                        "in Filtrex v3 in favor of the if..then..else ternary operator. " +
-                        "See issue #34 for more information."
-                    )
-                    break
-
-                case 'modulo':
-                    if (warnedTimes.modulo++ >= warnMax) break
-                    console.warn(
-                        "The use of '%' as a modulo operator has been deprecated in Filtrex v3 " +
-                        "in favor of the 'mod' operator. You can use it like this: '3 mod 2 == 1'. " +
-                        "See issue #48 for more information."
+                        "noop"
                     )
                     break
             }
@@ -235,6 +223,11 @@ export function useDotAccessOperator(name, get, obj, type) {
     return obj
 }
 
+// Functions available to the expression
+const builtinFunctions = {
+    exists: (v) => v !== undefined && v !== null,
+    empty: (v) => v === undefined || v === null || v === '' || Array.isArray(v) && v.length === 0
+}
 
 /**
  * A simple, safe, JavaScript expression engine, allowing end-users to enter arbitrary expressions without p0wning you.
@@ -281,7 +274,7 @@ export function useDotAccessOperator(name, get, obj, type) {
  *  * `( x, y, z )` Array of elements x, y and z
  *  * `exists(x)` True if `x` is neither `undefined` nor `null`
  *  * `empty(x)` True if `x` doesn't exist, it is an empty string or empty array
- *  * `myFooBarFunction(x)` Custom function defined in `options.extraFunctions`
+ *  * `myFooBarFunction(x)` Custom function defined in `options.symbols`
  */
 export function compileExpression(expression, options) {
 
@@ -291,25 +284,17 @@ export function compileExpression(expression, options) {
 
     options = typeof options === "object" ? options : {}
 
-    const knownOptions = ['extraFunctions', 'constants', 'customProp', 'operators']
-    let {extraFunctions, constants, customProp, operators} = options
+    const knownOptions = ['symbols', 'customProp', 'operators']
+    let {symbols, customProp, operators} = options
 
     for (const key of Object.keys(options))
         if (!knownOptions.includes(key)) throw new UnknownOptionError(key)
 
-
-
-    // Functions available to the expression
-    let functions = {
-        exists: (v) => v !== undefined && v !== null,
-        empty: (v) => v === undefined || v === null || v === '' || Array.isArray(v) && v.length === 0
+    symbols = {
+        ...builtinFunctions,
+        ...(symbols ?? {})
     }
 
-    if (extraFunctions) {
-        for (const name of Object.keys(extraFunctions)) {
-            functions[name] = extraFunctions[name]
-        }
-    }
 
     let defaultOperators = {
         '|': (a, b) => ensureFunc(b)(a),
@@ -333,7 +318,7 @@ export function compileExpression(expression, options) {
 
         '~=': (a, b) => RegExp(str(b)).test(str(a)),
 
-        '??': (a, b) => functions.empty(a) ? b : a
+        '??': (a, b) => symbols.empty(a) ? b : a
     }
 
     if (operators) {
@@ -344,16 +329,11 @@ export function compileExpression(expression, options) {
 
     operators = defaultOperators
 
-    constants = constants ?? {}
-
-
-
     // Compile the expression
 
     let js = flatten( parser.parse(expression) )
     js.unshift('return ')
     js.push(';')
-
 
     // Metaprogramming functions
 
@@ -389,16 +369,11 @@ export function compileExpression(expression, options) {
     function prop({ name, type }, obj) {
         const isUnescaped = type === 'unescaped'
 
-        if (isUnescaped && hasOwnProperty(constants, name))
-            return constants[name]
-
-        if (isUnescaped && hasOwnProperty(functions, name) && typeof functions[name] === "function")
-            return functions[name]
+        if (isUnescaped && hasOwnProperty(symbols, name))
+            return symbols[name]
 
         return nakedProp(name, obj, type)
     }
-
-
 
     // Patch together and return
 
@@ -406,7 +381,7 @@ export function compileExpression(expression, options) {
 
     return function(data) {
         try {
-            return func(createCall(functions), operators, std, prop, data)
+            return func(createCall(symbols), operators, std, prop, data)
         }
         catch (e)
         {
