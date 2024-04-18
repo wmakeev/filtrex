@@ -11,8 +11,10 @@ const grammar = {
     lex: {
         rules: [
             // Skip comments like `(* comment *)`
+            // Based on https://stackoverflow.com/a/36328890
+            // Test sandbox https://regex101.com/r/dU5fO8/205
             [_`\(\*[^*]*\*+(?:[^)(*][^*]*\*+)*\)`, ''],
-            
+
             [_`\*`, `return "*" ;`],
             [_`\/`, `return "/" ;`],
             [_`-` , `return "-" ;`],
