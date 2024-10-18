@@ -126,8 +126,9 @@ const grammar = {
             ['e in e', code`std.isSubset(${1}, ${3})`],
             ['e notIn e', code`!std.isSubset(${1}, ${3})`],
 
-            ['( e )'  , code`${2}`],
-            ['[ e ]'  , code`[ ${2} ]`],
+            ['( e )', code`${2}`],
+            ['[ e ]', code`[ ${2} ]`],
+            ['[ ]'  , code`[]`],
             ['( Arguments , e )', code`[ ${2}, ${4} ]`],
             ['[ Arguments , e ]', code`[ ${2}, ${4} ]`],
 

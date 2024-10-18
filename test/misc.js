@@ -126,15 +126,20 @@ describe('Various other things', () => {
     });
 
     it('array support', () => {
-        const arr1 = eval('(42, "fifty", pi)', {pi: Math.PI});
+        const arr0 = eval('[]', {});
+        expect(arr0).is.empty.array();
 
-        expect(arr1).is.array();
-        expect(arr1).to.be.equalTo([42, "fifty", Math.PI]);
+        const arr1 = eval('[[], [ ] , [ []]]', {});
+        expect(arr1).to.be.deep.equal([[], [], [[]]])
 
-        const arr2 = eval('[42, "fifty", pi]', {pi: Math.PI});
-
+        const arr2 = eval('(42, "fifty", pi)', {pi: Math.PI});
         expect(arr2).is.array();
         expect(arr2).to.be.equalTo([42, "fifty", Math.PI]);
+
+        const arr3 = eval('[42, "fifty", pi]', {pi: Math.PI});
+
+        expect(arr3).is.array();
+        expect(arr3).to.be.equalTo([42, "fifty", Math.PI]);
     });
 
     it('nullish coalescing operator', () => {
