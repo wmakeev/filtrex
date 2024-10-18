@@ -1,6 +1,6 @@
 {
   "name": "@wmakeev/filtrex",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "A simple, safe, JavaScript Filter Expression compiler for end-users",
   "main": "dist/cjs/filtrex.js",
   "types": "dist/esm/filtrex.d.ts",
