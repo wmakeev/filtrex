@@ -298,6 +298,7 @@ export function compileExpression(expression, options) {
 
     let defaultOperators = {
         '|': (a, b) => ensureFunc(b)(a),
+        '|?': (a, b) => builtinFunctions.exists(a) ? ensureFunc(b)(a) : a,
 
         '+': (a, b) => num(a) + num(b),
         '-': (a, b) => b === undefined ? -num(a) : num(a) - num(b),

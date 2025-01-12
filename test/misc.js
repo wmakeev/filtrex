@@ -23,19 +23,50 @@ describe('Various other things', () => {
         let mult = x => y => x * y;
         let toFixed = n => x => x.toFixed(n)
         let trim = s => s.trim()
+        let isNull = v => v === null
 
-        let options = { symbols: {add, mult, toFixed, trim} };
+        let options = { symbols: {add, mult, toFixed, trim, isNull, null: null} };
         
         expect( compileExpression('v | add(3)', options)({v:2}) ).equals(5);
         expect( compileExpression('v | add(3) | add(5) | toFixed(2)', options)({v:2}) ).equals('10.00');
-        expect( compileExpression('s | trim', options)({s:' foo  '}) ).equals('foo');
+        expect( compileExpression('null | isNull', options)() ).equals(true);
         expect( compileExpression('s | trim', options)({s:' foo  '}) ).equals('foo');
 
-        expect( compileExpression('if "" | empty then 3 | add(2) else "fail"', options)() ).equals(5);
-        expect( compileExpression('if (2 | mult(2)) == 4 then " ok " | trim else "fail"', options)() ).equals('ok');
-        expect( compileExpression('(2 | mult(2)) + 4 | add(1)', options)() ).equals(9);
+        expect( compileExpression('if 1 > 0 then 1 else 0 | add(2)', options)() ).equals(3);
+        expect( compileExpression('1 + 3 | add(2)', options)() ).equals(6);
+        expect( compileExpression('foo of obj1 | trim', options)({obj1: {foo: ' bar '}}) ).equals('bar');
+        expect( compileExpression('(3 | mult(2)) + 4 | add(1)', options)() ).equals(11);
         
         expect( compileExpression('1 | 2')({}) )
+            .instanceof(Error) // TODO UnexpectedTypeError
+            .and.have.property('message', 'Expected a function, but got a number instead.');
+    })
+
+    it('optional pipe operator', () => {
+        let add = x => y => x + y;
+        let mult = x => y => x * y;
+        let toFixed = n => x => x.toFixed(n)
+        let trim = s => s.trim()
+        let toNull = () => null
+        let isNull = v => v === null
+
+        let options = { symbols: {add, mult, toFixed, trim, toNull, isNull, null: null, undefined: undefined} };
+        
+        expect( compileExpression('null |? add(3)', options)() ).equals(null);
+        expect( compileExpression('undefined |? add(3)', options)() ).equals(undefined);
+        expect( compileExpression('0 |? add(3)', options)() ).equals(3);
+        expect( compileExpression('"" |? trim', options)() ).equals("");
+
+        expect( compileExpression('null |? isNull', options)() ).equals(null);
+        expect( compileExpression('null |? add(3) | isNull', options)() ).equals(true);
+        expect( compileExpression('1 | add(1) | toNull |? add(5)', options)() ).equals(null);
+
+        expect( compileExpression('if 1 > 0 then 1 else 0 |? add(2)', options)() ).equals(3);
+        expect( compileExpression('1 + 3 |? add(2)', options)() ).equals(6);
+        expect( compileExpression('foo of obj1 |? trim', options)({obj1: {foo: ' bar '}}) ).equals('bar');
+        expect( compileExpression('(3 | mult(2)) + 4 |? add(1)', options)() ).equals(11);
+        
+        expect( compileExpression('1 |? 2')({}) )
             .instanceof(Error) // TODO UnexpectedTypeError
             .and.have.property('message', 'Expected a function, but got a number instead.');
     })
