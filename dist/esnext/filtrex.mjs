@@ -3,6 +3,8 @@ import { parser } from './parser.mjs'
 import { hasOwnProperty, bool, num, simple, mod, arr, str, flatten, code, ensureFunc } from './utils.mjs'
 import { UnknownFunctionError, UnknownPropertyError, UnknownOptionError, InternalError } from './errors.mjs'
 
+export { UnknownFunctionError, UnknownPropertyError, UnknownOptionError, InternalError } from './errors.mjs'
+
 export const cast = {
     asBoolean: bool,
     asNumber: num,

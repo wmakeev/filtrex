@@ -2783,8 +2783,8 @@ var filtrex = (function (exports) {
    */
 
   function hasOwnProperty(obj, prop) {
-    if (_typeof(obj) === "object" || typeof obj === "function") {
-      return Object.prototype.hasOwnProperty.call(obj, prop);
+    if (Object.prototype.toString.call(obj) === '[object Object]') {
+      return Object.hasOwn(obj, prop);
     }
 
     return false;
@@ -3318,6 +3318,10 @@ var filtrex = (function (exports) {
     };
   }
 
+  exports.InternalError = InternalError;
+  exports.UnknownFunctionError = UnknownFunctionError;
+  exports.UnknownOptionError = UnknownOptionError;
+  exports.UnknownPropertyError = UnknownPropertyError;
   exports.cast = cast;
   exports.compileExpression = compileExpression;
   exports.useDotAccessOperator = useDotAccessOperator;

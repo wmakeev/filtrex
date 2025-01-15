@@ -2525,8 +2525,8 @@ var InternalError = /*#__PURE__*/function (_Error) {
 
 
 function hasOwnProperty(obj, prop) {
-  if (_typeof(obj) === "object" || typeof obj === "function") {
-    return Object.prototype.hasOwnProperty.call(obj, prop);
+  if (Object.prototype.toString.call(obj) === '[object Object]') {
+    return Object.hasOwn(obj, prop);
   }
 
   return false;
@@ -3075,4 +3075,4 @@ function compileExpression(expression, options) {
   };
 }
 
-export { cast, compileExpression, useDotAccessOperator, useDotAccessOperatorAndOptionalChaining, useOptionalChaining };
+export { InternalError, UnknownFunctionError, UnknownOptionError, UnknownPropertyError, cast, compileExpression, useDotAccessOperator, useDotAccessOperatorAndOptionalChaining, useOptionalChaining };
