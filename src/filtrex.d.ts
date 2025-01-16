@@ -111,7 +111,8 @@ export interface Options
         name: string,
         get: (name: string) => any,
         object: any,
-        type: 'unescaped' | 'single-quoted'
+        type: 'unescaped' | 'single-quoted',
+        isNested: boolean
     ) => any
 
     /**

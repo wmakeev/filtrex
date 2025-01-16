@@ -174,7 +174,7 @@ export function useDotAccessOperator(name, get, obj, type) {
     const parts = name.split('.')
 
     for (const propertyName of parts) {
-        if (hasOwnProperty(obj ?? {}, propertyName)) {
+        if (hasOwnProperty(obj, propertyName)) {
             obj = obj[propertyName]
         } else {
             throw new UnknownPropertyError(propertyName)
@@ -340,8 +340,8 @@ export function compileExpression(expression, options) {
 
     // Metaprogramming functions
 
-    function nakedProp(name, obj, type) {
-        if (hasOwnProperty(obj ?? {}, name))
+    function nakedProp(name, obj, type, isNested) {
+        if (hasOwnProperty(obj, name))
             return obj[name]
 
         throw new UnknownPropertyError(name)
@@ -349,7 +349,7 @@ export function compileExpression(expression, options) {
 
     function safeGetter(obj) {
         return function get(name) {
-            if (hasOwnProperty(obj ?? {}, name))
+            if (hasOwnProperty(obj, name))
                 return obj[name]
 
             throw new UnknownPropertyError(name)
@@ -357,7 +357,8 @@ export function compileExpression(expression, options) {
     }
 
     if (typeof customProp === 'function') {
-        nakedProp = (name, obj, type) => customProp(name, safeGetter(obj), obj, type)
+        nakedProp = (name, obj, type, isNested) =>
+            customProp(name, safeGetter(obj), obj, type, isNested)
     }
 
     function createCall(fns) {
@@ -369,25 +370,24 @@ export function compileExpression(expression, options) {
         }
     }
 
-    function prop({ name, type }, obj) {
+    function prop({ name, type }, obj, isNested) {
         const isUnescaped = type === 'unescaped'
 
-        if (isUnescaped && hasOwnProperty(symbols, name))
+        if (isNested === false && isUnescaped && hasOwnProperty(symbols, name))
             return symbols[name]
 
-        return nakedProp(name, obj, type)
+        return nakedProp(name, obj, type, isNested)
     }
 
     // Patch together and return
 
-    let func = new Function('call', 'ops', 'std', 'prop', 'data', js.join(''))
+    const func = new Function('call', 'ops', 'std', 'prop', 'data', js.join(''))
 
     return function(data) {
         try {
             return func(createCall(symbols), operators, std, prop, data)
         }
-        catch (e)
-        {
+        catch (e) {
             return e
         }
     };

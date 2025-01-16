@@ -136,9 +136,9 @@ const grammar = {
             ['[ Arguments , e ]', code`[ ${2}, ${4} ]`],
             
             ['Number' , parenless`${1}`],
-            ['Symbol' , parenless`prop(${1}, data)`],
+            ['Symbol' , parenless`prop(${1}, data, false)`],
             ['String' , parenless`${1}`],
-            ['Symbol of e', parenless`prop(${1}, ${3})`],
+            ['Symbol of e', parenless`prop(${1}, ${3}, true)`],
 
             ['Symbol ( )', parenless`call(${1})`],
             ['Symbol ( Arguments )', parenless`call(${1}, ${3})`],
