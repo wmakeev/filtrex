@@ -205,13 +205,13 @@ var _parser = (function() {
                     this.$ = ["", $$[$0], ""];
                     break;
                 case 25:
-                    this.$ = ["prop(", $$[$0], ", data)"];
+                    this.$ = ["prop(", $$[$0], ", data, false)"];
                     break;
                 case 26:
                     this.$ = ["", $$[$0], ""];
                     break;
                 case 27:
-                    this.$ = ["prop(", $$[$0 - 2], ", ", $$[$0], ")"];
+                    this.$ = ["prop(", $$[$0 - 2], ", ", $$[$0], ", true)"];
                     break;
                 case 28:
                     this.$ = ["call(", $$[$0 - 2], ")"];

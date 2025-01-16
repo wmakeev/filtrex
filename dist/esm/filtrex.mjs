@@ -235,7 +235,7 @@ var _parser = function () {
           break;
 
         case 25:
-          this.$ = ["prop(", $$[$0], ", data)"];
+          this.$ = ["prop(", $$[$0], ", data, false)"];
           break;
 
         case 26:
@@ -243,7 +243,7 @@ var _parser = function () {
           break;
 
         case 27:
-          this.$ = ["prop(", $$[$0 - 2], ", ", $$[$0], ")"];
+          this.$ = ["prop(", $$[$0 - 2], ", ", $$[$0], ", true)"];
           break;
 
         case 28:
@@ -2525,7 +2525,7 @@ var InternalError = /*#__PURE__*/function (_Error) {
 
 
 function hasOwnProperty(obj, prop) {
-  if (Object.prototype.toString.call(obj) === '[object Object]') {
+  if (obj != null && _typeof(obj) === 'object' && Array.isArray(obj) === false) {
     return Object.hasOwn(obj, prop);
   }
 
@@ -2816,11 +2816,9 @@ function useDotAccessOperator(name, get, obj, type) {
 
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var _obj;
-
       var propertyName = _step.value;
 
-      if (hasOwnProperty((_obj = obj) !== null && _obj !== void 0 ? _obj : {}, propertyName)) {
+      if (hasOwnProperty(obj, propertyName)) {
         obj = obj[propertyName];
       } else {
         throw new UnknownPropertyError(propertyName);
@@ -3025,21 +3023,21 @@ function compileExpression(expression, options) {
   js.unshift('return ');
   js.push(';'); // Metaprogramming functions
 
-  function nakedProp(name, obj, type) {
-    if (hasOwnProperty(obj !== null && obj !== void 0 ? obj : {}, name)) return obj[name];
+  function nakedProp(name, obj, type, isNested) {
+    if (hasOwnProperty(obj, name)) return obj[name];
     throw new UnknownPropertyError(name);
   }
 
   function safeGetter(obj) {
     return function get(name) {
-      if (hasOwnProperty(obj !== null && obj !== void 0 ? obj : {}, name)) return obj[name];
+      if (hasOwnProperty(obj, name)) return obj[name];
       throw new UnknownPropertyError(name);
     };
   }
 
   if (typeof customProp === 'function') {
-    nakedProp = function nakedProp(name, obj, type) {
-      return customProp(name, safeGetter(obj), obj, type);
+    nakedProp = function nakedProp(name, obj, type, isNested) {
+      return customProp(name, safeGetter(obj), obj, type, isNested);
     };
   }
 
@@ -3056,12 +3054,12 @@ function compileExpression(expression, options) {
     };
   }
 
-  function prop(_ref2, obj) {
+  function prop(_ref2, obj, isNested) {
     var name = _ref2.name,
         type = _ref2.type;
     var isUnescaped = type === 'unescaped';
-    if (isUnescaped && hasOwnProperty(symbols, name)) return symbols[name];
-    return nakedProp(name, obj, type);
+    if (isNested === false && isUnescaped && hasOwnProperty(symbols, name)) return symbols[name];
+    return nakedProp(name, obj, type, isNested);
   } // Patch together and return
 
 
