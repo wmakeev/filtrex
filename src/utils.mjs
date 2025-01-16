@@ -6,7 +6,7 @@ import { UnexpectedTypeError } from './errors.mjs'
  * @param {string|number} prop property name
  */
 export function hasOwnProperty(obj, prop) {
-    if (Object.prototype.toString.call(obj) === '[object Object]') {
+    if (obj != null && typeof obj === 'object' && Array.isArray(obj) === false) {
         return Object.hasOwn(obj, prop)
     }
 
